@@ -1,5 +1,6 @@
 class Vacancies():
     """Класс для обработки вакансий"""
+    __slots__ = ('name', 'link', 'area', 'salary', 'description', 'salary_from', 'salary_to')
 
     def __init__(self, name: str, link: str, salary: int, area: str, description: str):
         self.name = name
@@ -18,3 +19,8 @@ class Vacancies():
         else:
             self.salary_from = 0
             self.salary_to = 0
+
+    def __ge__(self, other):
+        """Сравнение зарплат"""
+        if self.salary_from >= other.salary_from:
+            return self.salary_from
