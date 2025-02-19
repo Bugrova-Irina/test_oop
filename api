@@ -1,0 +1,57 @@
+from abc import ABC, abstractmethod
+import requests
+
+
+class API(ABC):
+    """Абстрактный класс для работы с API"""
+    @abstractmethod
+    def get_response(self, url): # подключение к сайту
+        pass
+
+
+class Parser(API):
+    """Класс для подключения к сайту по API"""
+
+    def get_response(self, url):
+        response = requests.get(url)  # Отправка get-запроса
+        print(response)
+        print(response.status_code)
+        print(response.text)
+        print(response.json())
+
+
+class HeadHunter(Parser):
+    """Класс для получения данных с сайта по API"""
+
+    def __init__(self, city='Moscow', number_of_city =1, page=1, keyword='Python'):
+        self.url = "https://api.hh.ru/vacancies"
+        self.headers = {'User-Agent': 'HH-User-Agent'}
+        self.params = {'text': '', 'page': 0, 'per_page': 100}
+        self.vacancies = []
+        self.page = page
+        self.city = city
+        self.number_of_city = number_of_city
+        self.keyword = keyword
+        # super().__init__(file_worker)
+
+    def get_response(self, url):
+        response = requests.get(self.url) # Отправка get-запроса
+        print(response)
+        print(response.status_code)
+        print(response.text)
+        print(response.json())
+
+    def get_vacancies(self, keyword):
+        self.params['text'] = keyword
+        while self.params.get('page') != 20:
+            response = requests.get(self.url, headers = self.headers, params=self.params)
+            vacancies = response.json()['items']
+            self.vacancies.extend(vacancies)
+            self.params['page'] += 1
+        return self.vacancies
+
+
+hh_vacancies = HeadHunter('Moscow', 1, 1, 'Python')
+hh_vacancies.get_response("https://api.hh.ru/vacancies")
+data_set_vacancy = hh_vacancies.get_vacancies('Python')
+print(data_set_vacancy)
