@@ -57,7 +57,7 @@ class MyWorkWithFile(WorkWithFile):
     def add_to_file(self):
         """Запись данных в файл"""
         vacancies = self.read_json()
-        with open(self.__path, 'w', encoding='utf-8') as json_file:
+        with open(self.__path, 'r+', encoding='utf-8') as json_file:
             try:
                 json.dump(vacancies, json_file, ensure_ascii=False, indent=4)
             except json.JSONDecodeError:
