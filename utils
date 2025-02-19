@@ -45,7 +45,8 @@ class MyWorkWithFile(WorkWithFile):
                     vacancy['name'],
                     vacancy['apply_alternate_url'],
                     vacancy['salary'],
-                    vacancy['area']['name']
+                    vacancy['area']['name'],
+                    vacancy['snippet']["responsibility"]
                 ))
             return self.vacancies_list
         except FileNotFoundError:
