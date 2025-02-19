@@ -1,0 +1,69 @@
+import json
+from abc import ABC, abstractmethod
+
+from src.vacancies import Vacancies
+
+
+class WorkWithFile(ABC):
+    """Абстрактный класс для работы с файлами"""
+
+    @abstractmethod
+    def read_json(self):
+        """Чтение данных из json"""
+        pass
+
+    @abstractmethod
+    def add_to_file(self):
+        """Запись данных в файл"""
+        pass
+
+    @abstractmethod
+    def get_vacancies(self):
+        """Получение отфильтрованных вакансий"""
+        pass
+
+    @abstractmethod
+    def delete_vacancies(self):
+        """Удаление данных о вакансиях из файла"""
+        pass
+
+
+class MyWorkWithFile(WorkWithFile):
+    """Класс для работы с файлами"""
+    vacancies_list = []
+
+    def __init__(self, path: str = 'data/data.json'):
+        self.__path = path
+
+    def read_json(self):
+        """Чтение данных из json-файла"""
+        try:
+            with open(self.__path, 'r', encoding='utf-8') as json_file:
+                vacancies = json.load(json_file)
+            for vacancy in vacancies['items']:
+                self.vacancies_list.append(Vacancies(
+                    vacancy['name'],
+                    vacancy['apply_alternate_url'],
+                    vacancy['salary'],
+                    vacancy['area']['name']
+                ))
+            return self.vacancies_list
+        except FileNotFoundError:
+            print(f"Файл {self.__path} не найден")
+            return []
+
+    def add_to_file(self):
+        """Запись данных в файл"""
+        vacancies = self.read_json()
+        with open(self.__path, 'w', encoding='utf-8') as json_file:
+            try:
+                json.dump(vacancies, json_file, ensure_ascii=False, indent=4)
+            except json.JSONDecodeError:
+                json_file.write("[]")
+
+    def get_vacancies(self):
+        pass
+
+    def delete_vacancies(self):
+        with open(self.__path, 'w'):
+            pass
