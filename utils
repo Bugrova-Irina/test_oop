@@ -34,6 +34,7 @@ class MyWorkWithFile(WorkWithFile):
 
     def __init__(self, path: str = 'data/data.json'):
         self.__path = path
+        self.name = 'Python'
 
     def read_json(self):
         """Чтение данных из json-файла"""
@@ -63,7 +64,25 @@ class MyWorkWithFile(WorkWithFile):
                 json_file.write("[]")
 
     def get_vacancies(self):
-        pass
+        """Получаем отфильтрованный по ключевому слову в названии вакансии список вакансий"""
+        self.name = 'Python'
+
+        try:
+            with open(self.__path, 'r', encoding='utf-8') as json_file:
+                vacancies = json.load(json_file)
+            for vacancy in vacancies['items']:
+                if vacancy['name']:
+                    self.vacancies_list.append(Vacancies(
+                        vacancy['name'],
+                        vacancy['apply_alternate_url'],
+                        vacancy['salary'],
+                        vacancy['area']['name'],
+                        vacancy['snippet']["responsibility"]
+                    ))
+                    return self.vacancies_list
+        except FileNotFoundError:
+            print(f"Файл {self.__path} не найден")
+            return []
 
     def delete_vacancies(self):
         with open(self.__path, 'w'):
